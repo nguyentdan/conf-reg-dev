@@ -1288,11 +1288,12 @@ var ApproverComponent = /** @class */ (function () {
 /*!*************************************************!*\
   !*** ./projects/conf-reg/src/app/app.module.ts ***!
   \*************************************************/
-/*! exports provided: AppModule */
+/*! exports provided: AppErrorHandler, AppModule */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppErrorHandler", function() { return AppErrorHandler; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppModule", function() { return AppModule; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/platform-browser */ "jhN1");
@@ -1340,12 +1341,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var AppErrorHandler = /** @class */ (function () {
+    function AppErrorHandler() {
+    }
+    AppErrorHandler.prototype.handleError = function (error) {
+        if (Error)
+            alert(error);
+    };
+    return AppErrorHandler;
+}());
+
+_angular_core__WEBPACK_IMPORTED_MODULE_0__["ErrorHandler"];
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: AppModule, bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_6__["AppComponent"]] });
     AppModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ factory: function AppModule_Factory(t) { return new (t || AppModule)(); }, providers: [
-            { provide: _angular_core__WEBPACK_IMPORTED_MODULE_0__["APP_INITIALIZER"], useFactory: sp__WEBPACK_IMPORTED_MODULE_4__["appInit"], deps: [sp__WEBPACK_IMPORTED_MODULE_4__["SpAppInitService"]], multi: true }
+            { provide: _angular_core__WEBPACK_IMPORTED_MODULE_0__["APP_INITIALIZER"], useFactory: sp__WEBPACK_IMPORTED_MODULE_4__["appInit"], deps: [sp__WEBPACK_IMPORTED_MODULE_4__["SpAppInitService"]], multi: true },
+            { provide: AppErrorHandler, useClass: AppErrorHandler, multi: true }
         ], imports: [[
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
                 _app_routing_module__WEBPACK_IMPORTED_MODULE_3__["AppRoutingModule"],
@@ -2107,19 +2120,23 @@ var SpAppInitService = /*#__PURE__*/function () {
     value: function initApp() {
       var _this = this;
 
-      return new Promise(function (resolve, reject) {
-        _this.setting = _this.getSettings();
-        _this.metafile = _this.setting.env.configFile;
-        Promise.all([_this.getCurrentUserAsync(), _this.getConfigFileAsync()]).then(function (res) {
-          _this.init(res);
+      try {
+        return new Promise(function (resolve, reject) {
+          _this.setting = _this.getSettings();
+          _this.metafile = _this.setting.env.configFile;
+          Promise.all([_this.getCurrentUserAsync(), _this.getConfigFileAsync()]).then(function (res) {
+            _this.init(res);
 
-          resolve(true);
-        }).catch(function (err) {
-          alert('Failed to initialize the app.\n' + JSON.stringify(err));
-          console.error('Failed to initialize the app.', err);
-          reject(err);
+            resolve(true);
+          }).catch(function (err) {
+            alert('Failed to initialize the app.\n' + JSON.stringify(err));
+            console.error('Failed to initialize the app.', err);
+            reject(err);
+          });
         });
-      });
+      } catch (err) {
+        alert('App Init Error:\n' + err);
+      }
     }
   }]);
 
@@ -9009,6 +9026,10 @@ function AppComponent_div_19_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("click", function AppComponent_div_19_Template_button_click_12_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r13); var _r11 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵreference"](5); var ctx_r15 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"](); return ctx_r15.alert(_r11.value, "error"); });
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](13, "Error");
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](14, "button", 24);
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("click", function AppComponent_div_19_Template_button_click_14_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r13); var _r11 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵreference"](5); var ctx_r16 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"](); return ctx_r16.throw(_r11); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](15, "Error");
+    _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
 } if (rf & 2) {
     var ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵnextContext"]();
@@ -9031,6 +9052,15 @@ var AppComponent = /** @class */ (function () {
             setTimeout(function () { return _this.app.busy = stt; }), 0;
         });
         this.app.testing = this.ctx.testing;
+        window.onerror = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var err = '';
+            args.forEach(function (e) { return err += '\n\n' + e; });
+            alert(err);
+        };
     };
     /// router-outlet:activate
     AppComponent.prototype.onActivate = function (ev) {
@@ -9040,17 +9070,20 @@ var AppComponent = /** @class */ (function () {
     AppComponent.prototype.alert = function (err, cat) {
         this.ctx.alert(err, cat.toUpperCase(), cat);
     };
+    AppComponent.prototype.throw = function (any) {
+        throw new Error(any);
+    };
     AppComponent.prototype.userDetail = function () {
         this.ctx.alert({ Detail: this.user }, this.user.Title, 'info');
     };
     AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_cdk_layout__WEBPACK_IMPORTED_MODULE_0__["BreakpointObserver"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_context_service__WEBPACK_IMPORTED_MODULE_4__["ContextService"])); };
-    AppComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: AppComponent, selectors: [["app-root"]], decls: 23, vars: 9, consts: [[1, "page-header"], ["value", "100", 2, "height", "2px", 3, "mode", "color"], [1, "nav", "center"], ["mat-icon-button", "", "aria-label", "Toggle sidenav", 3, "click"], ["aria-label", "nav toggle", 2, "margin-top", "-8px"], ["routerLink", "", 1, "mat-button"], [4, "ngFor", "ngForOf"], [1, "spacer"], ["mat-button", "", 1, "info-fg", 3, "click"], ["mode", "side", "opened", "", 1, "sidenav", 3, "fixedInViewport", "fixedTopGap", "fixedBottomGap"], ["drawer", "", "sidenav", ""], ["style", "padding:16px;", 4, "ngIf"], [2, "margin", "8px"], [3, "activate"], ["routerLinkActive", "active", 3, "routerLink", 4, "ngIf"], ["routerLinkActive", "active", 3, "routerLink"], ["mat-list-item", "", "routerLinkActive", "active", 3, "routerLink", 4, "ngIf"], ["mat-list-item", "", "routerLinkActive", "active", 3, "routerLink"], [2, "padding", "16px"], ["matInput", "", 3, "value"], ["txt", ""], ["mat-raised-button", "", "color", "primary", 3, "click"], ["mat-raised-button", "", "color", "accent", 3, "click"], ["mat-raised-button", "", "color", "warn", 3, "click"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
-            var _r16 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵgetCurrentView"]();
+    AppComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: AppComponent, selectors: [["app-root"]], decls: 23, vars: 9, consts: [[1, "page-header"], ["value", "100", 2, "height", "2px", 3, "mode", "color"], [1, "nav", "center"], ["mat-icon-button", "", "aria-label", "Toggle sidenav", 3, "click"], ["aria-label", "nav toggle", 2, "margin-top", "-8px"], ["routerLink", "", 1, "mat-button"], [4, "ngFor", "ngForOf"], [1, "spacer"], ["mat-button", "", 1, "info-fg", 3, "click"], ["mode", "side", "opened", "", 1, "sidenav", 3, "fixedInViewport", "fixedTopGap", "fixedBottomGap"], ["drawer", "", "sidenav", ""], ["style", "padding:16px;", 4, "ngIf"], [2, "margin", "8px"], [3, "activate"], ["routerLinkActive", "active", 3, "routerLink", 4, "ngIf"], ["routerLinkActive", "active", 3, "routerLink"], ["mat-list-item", "", "routerLinkActive", "active", 3, "routerLink", 4, "ngIf"], ["mat-list-item", "", "routerLinkActive", "active", 3, "routerLink"], [2, "padding", "16px"], ["matInput", "", 3, "value"], ["txt", ""], ["mat-raised-button", "", "color", "primary", 3, "click"], ["mat-raised-button", "", "color", "accent", 3, "click"], ["mat-raised-button", "", "color", "warn", 3, "click"], ["mat-raised-button", "", 3, "click"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
+            var _r17 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵgetCurrentView"]();
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 0);
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](1, "mat-progress-bar", 1);
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](2, "div", 2);
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "button", 3);
-            _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("click", function AppComponent_Template_button_click_3_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r16); var _r1 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵreference"](14); return _r1.toggle(); });
+            _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("click", function AppComponent_Template_button_click_3_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵrestoreView"](_r17); var _r1 = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵreference"](14); return _r1.toggle(); });
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](4, "mat-icon", 4);
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](5, "\u2630");
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
@@ -9071,7 +9104,7 @@ var AppComponent = /** @class */ (function () {
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](16, "mat-nav-list");
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](17, AppComponent_ng_container_17_Template, 2, 1, "ng-container", 6);
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](18, "mat-divider");
-            _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](19, AppComponent_div_19_Template, 14, 3, "div", 11);
+            _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtemplate"](19, AppComponent_div_19_Template, 16, 3, "div", 11);
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
             _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](20, "mat-sidenav-content");
