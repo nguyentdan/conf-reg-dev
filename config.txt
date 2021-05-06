@@ -1,0 +1,257 @@
+{
+  "name": "Conf-Reg",
+  "url": {
+    "app": "http://sp2016",
+    "web": "http://sp2016"
+  },
+  "roles": {
+    "owner": 6,
+    "0-Quality Control": 8,
+    "1-Budget Analyst": 17,
+    "2-Billing Official": 12,
+    "3-Paying Official": 13,
+    "5-Cert Verification": 6,
+    "App Admins": 16,
+    "Authorized": 8
+  },
+  "authorizes": ["App Admins"],
+  "data": {
+    "default": 0,
+    "stores": [
+      {
+        "title": "Conference Registration",
+        "url": "http://sp2016/Lists/ConferenceRegisstration/",
+        "query": {
+          "select": "ID,Title,DepartmentId,Department/ID,Department/Title,Merchant,Cost,PaymentInstruction,Approvers,StartDate,EndDate,Stage,PreviousStage,Status,ActionRequired,Created,Author/Title,Author/EMail,Author/Name,AttachmentFiles/FileName,AttachmentFiles/ServerRelativeUrl",
+          "filter": "",
+          "orderby": "",
+          "expand": "Department,Author,AttachmentFiles",
+          "top": 10000,
+          "skip": ""
+        },
+        "displays": [
+          "ID",
+          "Department",
+          "Title",
+          "Merchant",
+          "StartDate",
+          "Amount",
+          "Stage"
+        ],
+        "fields": [
+          {
+            "EntityPropertyName": "ID",
+            "Title": "ID",
+            "FieldTypeKind": 2,
+            "ReadOnlyField": true
+          },
+          {
+            "EntityPropertyName": "DepartmentId",
+            "Title": "Department ID",
+            "FieldTypeKind": 7,
+            "CssClass": "col-3",
+            "required": true,
+            "LookupList": {
+              "title": "Departments",
+              "url": "http://sp2016/lists/Departments",
+              "key": "Title",
+              "value": "ID",
+              "query": {
+                "select": "ID,Title,Team,RA/Title,RA/Name,BA/Title,BA/Name,BO/Title,BO/Name,PO/Title,PO/Name,CV/Title,CV/Name",
+                "orderby": "Title",
+                "filter": "As eq 'Department'",
+                "expand": "RA,BA,BO,PO,CV"
+              }
+            }
+          },
+          {
+            "EntityPropertyName": "Merchant",
+            "Title": "Merchant",
+            "FieldTypeKind": 2,
+            "required": true,
+            "CssClass": "col-3"
+          },
+          {
+            "EntityPropertyName": "Title",
+            "Title": "Event",
+            "FieldTypeKind": 2,
+            "CssClass": "col-6"
+          },
+          {
+            "EntityPropertyName": "StartDate",
+            "Title": "Start Date",
+            "FieldTypeKind": 4,
+            "required": true,
+            "CssClass": "col-2"
+          },
+          {
+            "EntityPropertyName": "EndDate",
+            "Title": "End Date",
+            "FieldTypeKind": 4,
+            "required": true,
+            "CssClass": "col-2"
+          },
+          {
+            "EntityPropertyName": "Cost",
+            "Title": "Total Amount",
+            "FieldTypeKind": 9,
+            "CssClass": "col-2",
+            "required": true
+          },
+          {
+            "EntityPropertyName": "PaymentInstruction",
+            "Title": "Payment Instruction",
+            "FieldTypeKind": 3,
+            "CssClass": "col-6"
+          },
+          {
+            "Title": "Status",
+            "EntityPropertyName": "Status",
+            "FieldTypeKind": 2,
+            "ReadOnlyField": true
+          },
+          {
+            "Title": "Stage",
+            "EntityPropertyName": "Stage",
+            "FieldTypeKind": 2,
+            "ReadOnlyField": true
+          },
+          {
+            "Title": "Author",
+            "EntityPropertyName": "Author",
+            "FieldTypeKind": 20,
+            "ReadOnlyField": true
+          },
+          {
+            "Title": "Department",
+            "EntityPropertyName": "Department",
+            "FieldTypeKind": 7,
+            "ReadOnlyField": true
+          }
+        ],
+        "approvalForm": {
+          "column": "Approvers",
+          "properties": [
+            {
+              "Title": "Comment",
+              "EntityPropertyName": "comment",
+              "FieldTypeKind": 3,
+              "CssClass": "col-4"
+            },
+            {
+              "Title": "Concurred",
+              "EntityPropertyName": "concurred",
+              "FieldTypeKind": 8,
+              "CssClass": "col-2"
+            },
+            {
+              "Title": "Title",
+              "EntityPropertyName": "by",
+              "FieldTypeKind": 2,
+              "CssClass": "col-4"
+            },
+            {
+              "Title": "Date",
+              "EntityPropertyName": "date",
+              "FieldTypeKind": 4,
+              "CssClass": "col-4"
+            }
+          ]
+        }
+      }
+    ],
+    "dashboard": {
+      "keys": {
+        "toGroup": ["Stage", "Department.Title", "Author.Title" ],
+        "toSum": ["Cost"]          
+      }
+    }
+  },
+  "lists": {
+    "Announcements": {
+      "title": "Announcements",
+      "url": "http://sp2016/lists/Announcements",
+      "query": {
+        "select": "Title,Body,Expires,Created,Author/Title,AttachmentFiles/FileName,AttachmentFiles/ServerRelativeUrl",
+        "expand": "Author,AttachmentFiles"
+      }
+    },
+    "Departments": {
+      "title": "Departments",
+      "url": "http://sp2016/lists/Departments",
+      "query": {
+        "select": "Title,Team,RA/Title,RA/Name,BA/Title,BA/Name,BO/Title,BO/Name,PO/Title,PO/Name",
+        "expand": "RA,BA,BO,PO",
+        "orderby": "Title"
+      }
+    },
+    "Workflow": {
+      "title": "Workflow",
+      "url": "http://sp2016/Lists/Workflow",
+      "query": {
+        "select": "ID,Title,Stage,To,CC,Subject,Body,Footer,Role"
+      }
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "url": "http://sp2016/Lists/Feedback",
+      "query": {
+        "select": "ID,Title,Comment,Created,Author/Title",
+        "expand": "Author"
+      },
+      "display": "ID,Title,Comment,Created"
+    },
+    "AppLogs": {
+      "enabled": true,
+      "title": "AppLogs",
+      "url": "http://sp2016/Lists/AppLogs"
+    }
+  },
+  "dtypes": {
+    "Attachments": 19,
+    "Boolean": 8,
+    "Choice": 6,
+    "DateTime": 4,
+    "Integer": 1,
+    "Lookup": 7,
+    "Note": 3,
+    "Number": 9,
+    "Text": 2,
+    "User": 20
+  },
+  "Map": {
+    "toString": {
+      "FundSource": "Fund Source"
+    },
+    "Stage": {
+      "Start": "0-Requestor",
+      "RA": "0-Quality Control",
+      "BA": "1-Budget Analyst",
+      "BO": "2-Billing Official",
+      "PO": "3-Paying Official",
+      "CS": "4-Cert Submission",
+      "CV": "5-Cert Verification",
+      "End": "6-Completed"
+    },
+    "ApprovalOption": {
+      "Concurred": "Concurred",
+      "ActionRequired": "Action Required"
+    },
+    "ApprovalTitle": {
+      "RA": "0-Quality Control",
+      "BA": "1-Budget Analyst",
+      "BO": "2-Billing Official",
+      "PO": "3-Paying Official",
+      "CS": "4-Cert Submission",
+      "CV": "5-Cert Verification"
+    },
+    "Url": {
+      "detail": "http://sp2016/SiteAssets/ES6/supply-order/sp-index.aspx#/detail/"
+    }
+  },
+  "supportFileLocation": {
+    "url": "http://sp2016",
+    "relative": "SORP/Template"
+  },
+  "troubleshooting": true
+}
